@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Veterinaria.Data;
@@ -12,9 +13,11 @@ using Veterinaria.Data;
 namespace Veterinaria.Migrations
 {
     [DbContext(typeof(VeterinariaDbContext))]
-    partial class VeterinariaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260713233913_MakeDniAndTelefonoOptional")]
+    partial class MakeDniAndTelefonoOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
