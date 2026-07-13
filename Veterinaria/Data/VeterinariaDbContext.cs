@@ -63,7 +63,6 @@ namespace Veterinaria.Data
                 NameUser = "Administrador",
                 EmailUser = "enriquearana1402@gmail.com",
                 IdRol = 1,
-                //la contraseña es "3nriqueA1402#"
                 PasswordUser = "AQAAAAIAAYagAAAAEMGr17R7Y/RniLPqGvxDVm+wu1HJ+zO+blOyf+W61SXe3PmjMGjKzfLBaOrksbPaSw=="
             };
 
@@ -73,9 +72,9 @@ namespace Veterinaria.Data
                 NameUser = "Enrique Narro",
                 EmailUser = "vetnarro@gmail.com",
                 IdRol = 2,
-                //la contraseña es "Lucho22*"
                 PasswordUser = "AQAAAAIAAYagAAAAELq7CIaD5kLrTogQkheXcq6zVVGqO+Za/pV1tM2GyBXozcCOMNiwp6jtFGL+YMyqhw=="
             };
+            //Areglamos un tema de seguridad
 
             // Seed Data: Usuarios
             modelBuilder.Entity<Usuario>().HasData(user1, user2);
