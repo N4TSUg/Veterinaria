@@ -1,0 +1,269 @@
+@model Veterinaria.Models.Mascota
+
+@{
+    ViewData["Title"] = "Perfil Clínico - " + Model.Nombre;
+}
+
+<style>
+    /* Custom scrollbar for subtle clinical look */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #c3c6d5; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #737784; }
+    
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+    @@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="flex flex-col gap-lg">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-md mb-sm">
+        <div>
+            <div class="flex items-center gap-xs text-on-surface-variant text-label-md font-label-md mb-unit">
+                <a asp-action="Index" class="hover:text-primary transition-colors">Mascotas</a>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                <span class="text-on-surface">Perfil Detallado</span>
+            </div>
+            <h2 class="text-headline-lg font-headline-lg text-on-surface">Perfil Clínico</h2>
+        </div>
+        <div class="flex items-center gap-sm">
+            <a asp-controller="Vacuna" asp-action="Aplicar" asp-route-idMascota="@Model.IdMascota" class="bg-surface-container-lowest border border-outline-variant text-primary hover:bg-surface-container-low py-sm px-md rounded-lg text-label-md font-label-md transition-colors flex items-center gap-xs cursor-pointer shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">syringe</span>
+                Nueva Vacuna
+            </a>
+            <a asp-controller="Consulta" asp-action="Create" asp-route-idMascota="@Model.IdMascota" class="bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container py-sm px-md rounded-lg text-label-md font-label-md transition-colors shadow-sm flex items-center gap-xs cursor-pointer">
+                <span class="material-symbols-outlined text-[18px]">edit_document</span>
+                Nueva Consulta
+            </a>
+        </div>
+    </div>
+
+    <!-- Bento Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Left Column: Context & Details -->
+        <div class="lg:col-span-4 flex flex-col gap-5">
+            <!-- Pet Info Card (Bento Style) -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col items-center text-center shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-primary-fixed to-surface-container-lowest opacity-50 z-0"></div>
+                
+                <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-sm z-10 mb-sm bg-surface flex items-center justify-center">
+                    @if (!string.IsNullOrEmpty(Model.FotoUrl))
+                    {
+                        <img src="@Model.FotoUrl" alt="Foto de @Model.Nombre" class="w-full h-full object-cover" />
+                    }
+                    else
+                    {
+                        <span class="material-symbols-outlined text-4xl text-primary opacity-50">pets</span>
+                    }
+                </div>
+                
+                <div class="z-10 w-full">
+                    <h3 class="text-headline-md font-headline-md text-on-surface">@Model.Nombre</h3>
+                    <div class="inline-flex items-center justify-center gap-xs bg-surface-container-low text-primary px-sm py-unit rounded-full text-label-md font-label-md mt-unit mb-md">
+                        <span class="material-symbols-outlined text-[14px]">@(Model.Sexo == "Macho" ? "male" : "female")</span>
+                        @Model.Sexo, @Model.Edad años
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-unit w-full text-left">
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Especie</span>
+                            <span class="text-body-md font-body-md text-on-surface">@Model.Especie</span>
+                        </div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Raza</span>
+                            <span class="text-body-md font-body-md text-on-surface truncate">@Model.Raza</span>
+                        </div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Peso</span>
+                            <span class="text-body-md font-body-md text-on-surface">@Model.Peso kg</span>
+                        </div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">ID</span>
+                            <span class="text-body-md font-body-md text-on-surface">#@Model.IdMascota.ToString("D4")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Mini Card -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-sm shadow-sm">
+                <div class="flex justify-between items-center border-b border-outline-variant pb-sm">
+                    <h4 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Propietario</h4>
+                    <a asp-controller="Cliente" asp-action="Details" asp-route-id="@Model.IdCliente" class="text-primary hover:bg-surface-container-low p-1 rounded transition-colors cursor-pointer">
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                    </a>
+                </div>
+                <div class="flex items-center gap-sm">
+                    <div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-bold">
+                        @Model.Cliente?.Nombre.Substring(0,1)@Model.Cliente?.Apellido.Substring(0,1)
+                    </div>
+                    <div>
+                        <p class="text-body-md font-body-md font-semibold text-on-surface">@Model.Cliente?.Nombre @Model.Cliente?.Apellido</p>
+                        <div class="flex items-center gap-xs text-on-surface-variant text-label-md mt-1">
+                            <span class="material-symbols-outlined text-[14px]">call</span>
+                            @Model.Cliente?.Telefono
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Medical History Canvas -->
+        <div class="lg:col-span-8 flex flex-col">
+            <!-- Tab Navigation -->
+            <div class="flex gap-sm border-b border-outline-variant mb-md px-sm">
+                <button id="tab-historia" onclick="switchTab('historia')" class="px-md py-sm text-label-md font-label-md border-b-2 border-primary text-primary transition-all">
+                    Historia Clínica
+                </button>
+                <button id="tab-vacunas" onclick="switchTab('vacunas')" class="px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all">
+                    Carnet de Vacunación
+                </button>
+            </div>
+
+            <!-- Tab Content: Historia Clínica -->
+            <div id="content-historia" class="tab-content active flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+                <div class="flex justify-between items-center mb-lg">
+                    <h3 class="text-headline-md font-headline-md text-on-surface">Consultas Médicas</h3>
+                </div>
+
+                @if (Model.Consultas != null && Model.Consultas.Any())
+                {
+                    <div class="relative border-l border-outline-variant ml-sm flex flex-col gap-lg pb-md">
+                        @foreach(var consulta in Model.Consultas.OrderByDescending(c => c.Fecha))
+                        {
+                            <div class="relative pl-lg">
+                                <div class="absolute left-[-5px] top-1 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-xs">
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-body-lg font-body-lg font-semibold text-on-surface">@consulta.Motivo</h4>
+                                        <a asp-controller="Consulta" asp-action="Edit" asp-route-id="@consulta.IdConsulta" class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Consulta">
+                                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                                        </a>
+                                        <button onclick="event.stopPropagation(); openDeleteModal('@Url.Action("Delete", "Consulta", new { id = consulta.IdConsulta })', '¿Estás seguro de que deseas eliminar esta consulta médica? Esta acción no se puede deshacer.')" class="text-on-surface-variant hover:text-error transition-colors cursor-pointer" title="Eliminar Consulta">
+                                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                                        </button>
+                                    </div>
+                                    <span class="text-label-md font-label-md text-on-surface-variant">@consulta.Fecha.ToString("dd MMM yyyy")</span>
+                                </div>
+                                <div class="bg-surface p-md rounded-lg border border-outline-variant mt-sm">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm text-body-md font-body-md">
+                                        <div>
+                                            <span class="block text-[11px] font-bold text-on-surface-variant uppercase mb-xs">Síntomas</span>
+                                            <p class="text-on-surface whitespace-pre-wrap break-words">@consulta.Sintomas</p>
+                                        </div>
+                                        <div>
+                                            <span class="block text-[11px] font-bold text-on-surface-variant uppercase mb-xs">Diagnóstico</span>
+                                            <p class="text-on-surface whitespace-pre-wrap break-words">@consulta.Diagnostico</p>
+                                        </div>
+                                        <div class="sm:col-span-2 pt-sm border-t border-outline-variant mt-xs">
+                                            <span class="block text-[11px] font-bold text-on-surface-variant uppercase mb-xs">Tratamiento</span>
+                                            <p class="text-on-surface whitespace-pre-wrap break-words">@consulta.Tratamiento</p>
+                                        </div>
+                                        @if(consulta.FechaProximaCita.HasValue)
+                                        {
+                                            <div class="sm:col-span-2 mt-xs text-sm text-primary font-semibold">
+                                                Próxima cita programada: @consulta.FechaProximaCita.Value.ToString("dd MMM yyyy")
+                                            </div>
+                                        }
+                                        @if(consulta.AdjuntosUrls != null && consulta.AdjuntosUrls.Any())
+                                        {
+                                            <div class="sm:col-span-2 pt-sm border-t border-outline-variant mt-xs flex flex-wrap gap-2">
+                                                @foreach (var url in consulta.AdjuntosUrls)
+                                                {
+                                                    var fileName = Uri.UnescapeDataString(url.Split('/').Last());
+                                                    <a href="@url" target="_blank" class="inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline bg-primary-container/10 px-2 py-1 rounded-md" title="@fileName">
+                                                        <span class="material-symbols-outlined text-[16px]">attachment</span>
+                                                        <span class="max-w-[150px] truncate">@fileName</span>
+                                                    </a>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center p-8 text-on-surface-variant">
+                        <span class="material-symbols-outlined text-4xl opacity-50 mb-2">medical_information</span>
+                        <p class="mb-4">No hay consultas registradas para esta mascota.</p>
+                        <a asp-controller="Consulta" asp-action="Create" asp-route-idMascota="@Model.IdMascota" class="inline-flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-sm">edit_document</span>
+                            Registrar Primera Consulta
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Tab Content: Carnet de Vacunación -->
+            <div id="content-vacunas" class="tab-content flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+                <div class="flex justify-between items-center mb-md">
+                    <h3 class="text-headline-md font-headline-md text-on-surface">Registro de Vacunas</h3>
+                </div>
+
+                <div class="flex flex-col gap-sm">
+                    @if (Model.VacunasAplicadas != null && Model.VacunasAplicadas.Any())
+                    {
+                        @foreach(var v in Model.VacunasAplicadas.OrderByDescending(va => va.FechaAplicacion))
+                        {
+                            bool isVencida = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value < DateTime.Now;
+                            bool esDosisUnica = !v.FechaProximaDosis.HasValue;
+                            string borderClass = isVencida ? "border-error-container" : "border-outline-variant";
+                            
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-sm border @borderClass rounded-lg bg-surface hover:bg-surface-container-low transition-colors relative overflow-hidden">
+                                @if (isVencida) { <div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div> }
+                                
+                                <div class="flex items-center gap-md @(isVencida ? "pl-sm" : "")">
+                                    <div class="w-10 h-10 rounded-full @(isVencida ? "bg-error-container text-on-error-container" : "bg-surface-variant text-on-surface-variant") flex items-center justify-center">
+                                        <span class="material-symbols-outlined">@(isVencida ? "warning" : "vaccines")</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-body-lg font-body-lg font-semibold text-on-surface">@v.Vacuna?.Nombre</h4>
+                                        <p class="text-label-md font-label-md text-on-surface-variant">Tipo: @v.Vacuna?.Tipo</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-lg mt-sm sm:mt-0 w-full sm:w-auto border-t sm:border-t-0 border-outline-variant pt-sm sm:pt-0">
+                                    <div class="text-right flex-1 sm:flex-none">
+                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Aplicada</span>
+                                        <span class="text-body-md text-on-surface">@v.FechaAplicacion.ToString("dd MMM yyyy")</span>
+                                    </div>
+                                    <div class="text-right flex-1 sm:flex-none pl-md border-l border-outline-variant">
+                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">@(esDosisUnica ? "Estado" : (isVencida ? "Vencida el" : "Próxima Dosis"))</span>
+                                        <span class="text-body-md font-bold @(isVencida ? "text-error" : "text-on-surface")">@(esDosisUnica ? "Dosis Única" : v.FechaProximaDosis?.ToString("dd MMM yyyy"))</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center p-8 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl opacity-50 mb-2">vaccines</span>
+                            <p class="mb-4">No hay vacunas registradas para esta mascota.</p>
+                            <a asp-controller="Vacuna" asp-action="Aplicar" asp-route-idMascota="@Model.IdMascota" class="inline-flex items-center gap-2 bg-surface-container-lowest border border-outline-variant text-primary px-4 py-2 rounded-lg font-label-md hover:bg-surface-container-low transition-colors shadow-sm">
+                                <span class="material-symbols-outlined text-sm">syringe</span>
+                                Registrar Vacuna
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-historia').className = "px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all";
+            document.getElementById('tab-vacunas').className = "px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all";
+            
+            document.getElementById(`content-${tabId}`).classList.add('active');
+            document.getElementById(`tab-${tabId}`).className = "px-md py-sm text-label-md font-label-md border-b-2 border-primary text-primary transition-all";
+        }
+    </script>
+}

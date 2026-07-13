@@ -1,0 +1,93 @@
+@{
+    ViewData["Title"] = "Calendario de Citas";
+}
+
+<div class="flex justify-between items-center mb-lg">
+    <div>
+        <h2 class="text-headline-lg font-headline-lg text-on-surface">Calendario de Citas</h2>
+        <p class="text-body-md text-on-surface-variant mt-1">Organiza y visualiza las próximas consultas y procedimientos.</p>
+    </div>
+</div>
+
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+    <div id='calendar'></div>
+</div>
+
+@section Scripts {
+    <!-- FullCalendar CDN -->
+    <script src='https://cdn.jsdelivr.net/npm/@@fullcalendar/core@@6.1.11/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@@fullcalendar/daygrid@@6.1.11/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@@fullcalendar/core@@6.1.11/locales/es.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@@6.1.11/index.global.min.js'></script>
+    <style>
+        /* Estilos base para integrar FullCalendar con el tema de la aplicación */
+        .fc-theme-standard th {
+            border-color: #c3c6d5;
+            background-color: #eff4ff;
+            padding: 8px 0;
+            color: #434653;
+            font-weight: 600;
+        }
+        .fc-theme-standard td, .fc-theme-standard th {
+            border-color: #c3c6d5;
+        }
+        .fc-day-today {
+            background-color: #f8f9ff !important; /* bg-surface */
+        }
+        .fc .fc-button-primary {
+            background-color: #003c90;
+            border-color: #003c90;
+        }
+        .fc .fc-button-primary:not(:disabled):active,
+        .fc .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #0f52ba;
+            border-color: #0f52ba;
+        }
+        .fc .fc-button-primary:hover {
+            background-color: #0f52ba;
+            border-color: #0f52ba;
+        }
+        .fc-event {
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 0.85em;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: 'es',
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    list: 'Agenda'
+                },
+                events: '/Calendario/GetCitas', // Endpoint para traer los eventos
+                eventTimeFormat: { 
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false
+                },
+                eventDidMount: function(info) {
+                    // Configurar tooltip nativo
+                    const props = info.event.extendedProps;
+                    info.el.title = `Mascota: ${info.event.title}\nDueño: ${props.dueño}\nMotivo: ${props.motivo}`;
+                }
+            });
+            
+            calendar.render();
+        });
+    </script>
+}

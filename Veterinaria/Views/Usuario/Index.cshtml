@@ -1,0 +1,68 @@
+@model IEnumerable<Veterinaria.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Gestión de Personal";
+}
+
+<div class="flex justify-between items-center mb-lg">
+    <div>
+        <h2 class="text-headline-lg font-headline-lg text-on-surface">Gestión de Personal</h2>
+        <p class="text-body-md text-on-surface-variant mt-1">Administra los accesos al sistema veterinario.</p>
+    </div>
+    <a asp-action="Create" class="bg-primary text-on-primary py-2 px-6 rounded-lg font-label-md flex items-center gap-2 hover:bg-on-primary-fixed-variant transition-colors shadow">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_add</span>
+        Nuevo Usuario
+    </a>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="bg-error-container text-on-error-container p-4 rounded-lg mb-4 flex items-center gap-2">
+        <span class="material-symbols-outlined">error</span>
+        @TempData["Error"]
+    </div>
+}
+
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-surface-container-low border-b border-outline-variant">
+                    <th class="py-4 px-6 text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Nombre</th>
+                    <th class="py-4 px-6 text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Correo</th>
+                    <th class="py-4 px-6 text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Rol</th>
+                    <th class="py-4 px-6 text-right text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant">
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-surface-container-low transition-colors">
+                        <td class="py-4 px-6 text-body-md font-bold text-on-surface">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-primary-container text-primary flex items-center justify-center font-bold">
+                                    @item.NameUser.Substring(0, 1).ToUpper()
+                                </div>
+                                @item.NameUser
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-body-md text-on-surface-variant">@item.EmailUser</td>
+                        <td class="py-4 px-6">
+                            <span class="px-3 py-1 text-label-sm font-bold rounded-full @(item.Rol.NameRol == "Administrador" ? "bg-error-container text-on-error-container" : "bg-secondary-container text-on-secondary-container")">
+                                @item.Rol.NameRol
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <a asp-action="Edit" asp-route-id="@item.IdUser" class="text-primary hover:text-primary-container p-2 rounded-full transition-colors mr-2 inline-block" title="Editar">
+                                <span class="material-symbols-outlined">edit</span>
+                            </a>
+                            <button onclick="openDeleteModal('@Url.Action("Delete", "Usuario", new { id = item.IdUser })', '¿Estás seguro de que deseas eliminar a @item.NameUser? Perderá el acceso al sistema.')" class="text-error hover:bg-error-container p-2 rounded-full transition-colors inline-block" title="Eliminar">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

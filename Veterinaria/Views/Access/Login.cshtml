@@ -1,0 +1,49 @@
+@model Veterinaria.ViewModels.Access.LoginVM
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl p-xl shadow-lg relative overflow-hidden">
+    
+    <!-- Decoración superior (Medical style) -->
+    <div class="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+
+    <div class="text-center mb-8">
+        <div class="w-16 h-16 mx-auto bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">pets</span>
+        </div>
+        <h2 class="text-headline-lg font-headline-lg text-primary">Veterinaria Bryan</h2>
+        <p class="text-body-md text-on-surface-variant mt-2">Acceso al panel de administración</p>
+    </div>
+
+    <form asp-action="Login" method="post" class="space-y-6">
+        @Html.AntiForgeryToken()
+
+        <!-- Resumen de validaciones si las hay -->
+        <div asp-validation-summary="ModelOnly" class="text-error text-label-md font-label-md bg-error-container/30 p-2 rounded-lg"></div>
+
+        <div>
+            <label asp-for="Correo" class="block text-label-md font-label-md text-on-surface mb-2">Correo Electrónico</label>
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">mail</span>
+                <input asp-for="Correo" class="w-full pl-10 pr-4 py-3 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" placeholder="ejemplo@correo.com" autofocus autocomplete="off"/>
+            </div>
+            <span asp-validation-for="Correo" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div>
+            <label asp-for="Password" class="block text-label-md font-label-md text-on-surface mb-2">Contraseña</label>
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">lock</span>
+                <input asp-for="Password" type="password" class="w-full pl-10 pr-4 py-3 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" placeholder="••••••••"/>
+            </div>
+            <span asp-validation-for="Password" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <button type="submit" class="w-full bg-primary text-on-primary py-3 rounded-lg font-bold hover:bg-on-primary-fixed-variant transition-colors shadow flex items-center justify-center gap-2 active:scale-95">
+            <span class="material-symbols-outlined">login</span>
+            Ingresar al Sistema
+        </button>
+    </form>
+</div>

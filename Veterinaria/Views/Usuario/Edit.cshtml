@@ -1,0 +1,59 @@
+@model Veterinaria.ViewModels.Usuario.UsuarioEditVM
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="max-w-xl mx-auto bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+    <div class="flex items-center gap-2 mb-6 border-b border-outline-variant pb-4">
+        <span class="material-symbols-outlined text-primary text-3xl">manage_accounts</span>
+        <h2 class="text-headline-md font-headline-md text-on-surface">Editar Usuario</h2>
+    </div>
+
+    <form asp-action="Edit" class="space-y-6">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="IdUser" />
+        
+        <div>
+            <label asp-for="NameUser" class="block text-label-md font-label-md text-on-surface mb-2">Nombre Completo</label>
+            <input asp-for="NameUser" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+            <span asp-validation-for="NameUser" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div>
+            <label asp-for="EmailUser" class="block text-label-md font-label-md text-on-surface mb-2">Correo Electrónico (Login)</label>
+            <input asp-for="EmailUser" type="email" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+            <span asp-validation-for="EmailUser" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div>
+            <label asp-for="IdRol" class="block text-label-md font-label-md text-on-surface mb-2">Rol del Sistema</label>
+            <select asp-for="IdRol" asp-items="ViewBag.Roles" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow">
+            </select>
+            <span asp-validation-for="IdRol" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div class="bg-surface p-4 rounded-lg border border-outline-variant mt-6">
+            <h4 class="text-label-md font-bold text-on-surface-variant mb-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">lock_reset</span> Cambio de Contraseña (Opcional)
+            </h4>
+            <p class="text-label-sm text-on-surface-variant mb-4">Déjalo en blanco si no deseas cambiar la contraseña actual.</p>
+            
+            <label asp-for="PasswordUser" class="block text-label-md font-label-md text-on-surface mb-2">Nueva Contraseña</label>
+            <input asp-for="PasswordUser" type="password" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" placeholder="Escribe para cambiar" />
+            <span asp-validation-for="PasswordUser" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div class="flex justify-end gap-4 pt-4 border-t border-outline-variant">
+            <a asp-action="Index" class="px-6 py-2 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-container transition-colors">Cancelar</a>
+            <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-lg hover:bg-on-primary-fixed-variant transition-colors shadow flex items-center gap-2">
+                <span class="material-symbols-outlined">save</span>
+                Guardar Cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

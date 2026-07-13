@@ -1,0 +1,39 @@
+@model Veterinaria.ViewModels.Vacuna.VacunaCreateVM
+
+@{
+    ViewData["Title"] = "Registrar Vacuna";
+}
+
+<div class="max-w-2xl mx-auto bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+    <div class="flex items-center gap-2 mb-6 border-b border-outline-variant pb-4">
+        <span class="material-symbols-outlined text-primary text-3xl">vaccines</span>
+        <h2 class="text-headline-md font-headline-md text-on-surface">Agregar al Catálogo</h2>
+    </div>
+
+    <form asp-action="Create" method="post" class="space-y-6">
+        @Html.AntiForgeryToken()
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label asp-for="Nombre" class="block text-label-md font-label-md text-on-surface mb-2">Nombre de Vacuna</label>
+                <input asp-for="Nombre" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" placeholder="Ej: Antirrábica" />
+                <span asp-validation-for="Nombre" class="text-error text-xs mt-1 block"></span>
+            </div>
+            
+            <div>
+                <label asp-for="Tipo" class="block text-label-md font-label-md text-on-surface mb-2">Tipo / Frecuencia</label>
+                <input asp-for="Tipo" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" placeholder="Ej: Anual, Refuerzo..." />
+                <span asp-validation-for="Tipo" class="text-error text-xs mt-1 block"></span>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-4 pt-4 border-t border-outline-variant">
+            <a asp-action="Index" class="px-6 py-2 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-container transition-colors">Cancelar</a>
+            <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-lg hover:bg-on-primary-fixed-variant transition-colors shadow">Guardar Vacuna</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,158 @@
+@model Veterinaria.ViewModels.Dashboard.DashboardVM
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="space-y-lg">
+    <!-- Quick Actions Header -->
+    <div class="flex justify-between items-end mb-md">
+        <div>
+            <h2 class="text-headline-lg font-headline-lg text-on-surface">Visión General</h2>
+            <p class="text-body-md font-body-md text-on-surface-variant mt-1">
+                Hoy es @DateTime.Now.ToString("dddd, dd 'de' MMMM")
+            </p>
+        </div>
+        <div class="flex gap-md">
+            <a asp-controller="Cliente" asp-action="Create" class="bg-primary text-on-primary py-2 px-4 rounded-lg flex items-center justify-center gap-sm font-body-md hover:opacity-90 transition-opacity shadow-sm cursor-pointer">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person_add</span>
+                Registrar Cliente
+            </a>
+            <a asp-controller="Mascota" asp-action="Create" class="bg-surface text-primary border border-outline-variant py-2 px-4 rounded-lg flex items-center justify-center gap-sm font-body-md hover:bg-surface-container-low transition-colors shadow-sm cursor-pointer">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">pets</span>
+                Registrar Mascota
+            </a>
+        </div>
+    </div>
+
+    <!-- Bento Grid: Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+        <!-- Card 1 -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-md">
+                <span class="text-label-md font-label-md text-on-surface-variant uppercase">Total Clientes</span>
+                <div class="w-8 h-8 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">group</span>
+                </div>
+            </div>
+            <div>
+                <span class="text-display-lg font-display-lg text-on-surface block">@Model.TotalClientes</span>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-md">
+                <span class="text-label-md font-label-md text-on-surface-variant uppercase">Total Mascotas</span>
+                <div class="w-8 h-8 rounded-full bg-secondary-container/30 text-secondary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">pets</span>
+                </div>
+            </div>
+            <div>
+                <span class="text-display-lg font-display-lg text-on-surface block">@Model.TotalMascotas</span>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute right-[-20px] top-[-20px] opacity-5">
+                <span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+            </div>
+            <div class="flex justify-between items-start mb-md relative z-10">
+                <span class="text-label-md font-label-md text-on-surface-variant uppercase">Consultas del Mes</span>
+                <div class="w-8 h-8 rounded-full bg-surface-variant text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+                </div>
+            </div>
+            <div class="relative z-10">
+                <span class="text-display-lg font-display-lg text-on-surface block">@Model.ConsultasMes</span>
+                <div class="flex items-center mt-2 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">schedule</span>
+                    <span class="text-label-md font-label-md ml-1">@Model.ProximasCitas programadas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complex Layout: Citas & Alertas -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mt-xl">
+        <!-- Main Column: Próximas Citas -->
+        <div class="lg:col-span-2 space-y-md">
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+                <div class="px-lg py-md border-b border-surface-variant bg-surface flex justify-between items-center">
+                    <h3 class="text-headline-md font-headline-md text-on-surface">Próximas Visitas Médicas</h3>
+                    <a asp-controller="Mascota" asp-action="Index" class="text-label-md font-label-md text-primary hover:underline">Ver todas las mascotas</a>
+                </div>
+                <div class="divide-y divide-surface-variant">
+                    @if (Model.ListaProximasCitas != null && Model.ListaProximasCitas.Any())
+                    {
+                        foreach(var cita in Model.ListaProximasCitas)
+                        {
+                            <div class="p-md hover:bg-surface-container-lowest transition-colors flex justify-between items-center group cursor-pointer">
+                                <div class="flex items-center gap-md">
+                                    <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_clock</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-body-lg font-bold text-on-surface">@cita.Mascota.Nombre <span class="text-label-sm font-normal text-on-surface-variant ml-1">(@cita.Mascota.Especie)</span></h4>
+                                        <p class="text-label-md text-on-surface-variant mt-0.5">Motivo: @cita.Motivo</p>
+                                        <p class="text-label-sm text-on-surface-variant mt-0.5 flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">person</span>
+                                            @cita.Mascota.Cliente.Nombre @cita.Mascota.Cliente.Apellido
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="block text-label-md font-bold text-primary bg-primary-container/20 px-3 py-1 rounded-full">
+                                        @cita.FechaProximaCita?.ToString("dd MMM yyyy")
+                                    </span>
+                                    <a asp-controller="Mascota" asp-action="Details" asp-route-id="@cita.IdMascota" class="inline-block mt-2 text-label-sm text-primary hover:underline">Ver perfil</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center p-xl text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl opacity-30 mb-2">event_available</span>
+                            <p>No hay citas programadas próximamente.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Column: Alertas de Vacunación -->
+        <div class="space-y-md">
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col h-full">
+                <div class="px-lg py-md border-b border-surface-variant bg-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+                    <h3 class="text-headline-md font-headline-md text-on-surface">Alertas de Vacunación</h3>
+                </div>
+                <div class="p-md space-y-sm flex-1">
+                    @if (Model.VacunasPorVencer > 0)
+                    {
+                        <div class="p-sm bg-error-container/30 border border-error/20 rounded-lg flex items-start gap-3">
+                            <div class="mt-1">
+                                <span class="material-symbols-outlined text-error text-sm" style="font-variation-settings: 'FILL' 1;">vaccines</span>
+                            </div>
+                            <div>
+                                <p class="text-body-md font-bold text-on-surface">Atención Requerida</p>
+                                <p class="text-label-md font-label-md text-on-surface-variant">
+                                    Hay @Model.VacunasPorVencer vacuna(s) por vencer en los próximos 7 días.
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-sm bg-surface-container-high border border-outline-variant rounded-lg flex items-center gap-3">
+                            <span class="material-symbols-outlined text-secondary">check_circle</span>
+                            <p class="text-body-md text-on-surface">Todas las vacunas están al día.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

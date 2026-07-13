@@ -1,0 +1,133 @@
+@model Veterinaria.ViewModels.Consulta.ConsultaEditVM
+
+@{
+    ViewData["Title"] = "Editar Consulta";
+}
+
+<div class="max-w-2xl mx-auto bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+    <div class="flex items-center gap-2 mb-6 border-b border-outline-variant pb-4">
+        <span class="material-symbols-outlined text-primary text-3xl">edit</span>
+        <h2 class="text-headline-md font-headline-md text-on-surface">Editar Consulta Médica</h2>
+    </div>
+
+    <form asp-action="Edit" enctype="multipart/form-data" class="space-y-6">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="IdConsulta" />
+        <input type="hidden" asp-for="IdMascota" />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label asp-for="Fecha" class="block text-label-md font-label-md text-on-surface mb-2">Fecha de Consulta</label>
+                <input asp-for="Fecha" type="datetime-local" value="@Model.Fecha.ToString("yyyy-MM-ddTHH:mm")" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                <span asp-validation-for="Fecha" class="text-error text-xs mt-1 block"></span>
+            </div>
+            
+            <div>
+                <label asp-for="FechaProximaCita" class="block text-label-md font-label-md text-on-surface mb-2">Fecha Próxima Cita (Opcional)</label>
+                <input asp-for="FechaProximaCita" type="datetime-local" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                <span asp-validation-for="FechaProximaCita" class="text-error text-xs mt-1 block"></span>
+            </div>
+
+            <div class="md:col-span-2">
+                <label asp-for="Adjuntos" class="block text-label-md font-label-md text-on-surface mb-2">Nuevos Archivos Adjuntos (Se añadirán a los actuales)</label>
+                @if (Model.AdjuntosUrls != null && Model.AdjuntosUrls.Any())
+                {
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        @foreach (var url in Model.AdjuntosUrls)
+                        {
+                            var fileName = Uri.UnescapeDataString(url.Split('/').Last());
+                            <a href="@url" target="_blank" class="text-sm bg-surface-container border border-outline-variant px-3 py-1 rounded-full text-primary hover:underline flex items-center gap-1" title="@fileName">
+                                <span class="material-symbols-outlined text-[14px]">attachment</span> 
+                                <span class="max-w-[150px] truncate">@fileName</span>
+                            </a>
+                        }
+                    </div>
+                }
+                
+                <div id="fileListContainer" class="flex flex-col gap-2 empty:hidden mb-3"></div>
+                
+                <button type="button" onclick="document.getElementById('Adjuntos').click()" class="bg-surface-container-low border border-outline-variant text-primary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-surface-container transition-colors flex items-center gap-2 w-fit">
+                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    Agregar más archivos
+                </button>
+                
+                <input type="file" multiple asp-for="Adjuntos" id="Adjuntos" class="hidden" onchange="handleFiles(this)" />
+            </div>
+        </div>
+
+        <div>
+            <label asp-for="Motivo" class="block text-label-md font-label-md text-on-surface mb-2">Motivo de la Consulta</label>
+            <input asp-for="Motivo" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+            <span asp-validation-for="Motivo" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div>
+            <label asp-for="Sintomas" class="block text-label-md font-label-md text-on-surface mb-2">Síntomas</label>
+            <textarea asp-for="Sintomas" rows="3" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow"></textarea>
+            <span asp-validation-for="Sintomas" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div>
+            <label asp-for="Diagnostico" class="block text-label-md font-label-md text-on-surface mb-2">Diagnóstico</label>
+            <textarea asp-for="Diagnostico" rows="3" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow"></textarea>
+            <span asp-validation-for="Diagnostico" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div>
+            <label asp-for="Tratamiento" class="block text-label-md font-label-md text-on-surface mb-2">Tratamiento / Notas Adicionales</label>
+            <textarea asp-for="Tratamiento" rows="3" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow"></textarea>
+            <span asp-validation-for="Tratamiento" class="text-error text-xs mt-1 block"></span>
+        </div>
+
+        <div class="flex justify-end gap-4 pt-4 border-t border-outline-variant">
+            <a asp-controller="Mascota" asp-action="Details" asp-route-id="@Model.IdMascota" class="px-6 py-2 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-container transition-colors">Cancelar</a>
+            <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-lg hover:bg-on-primary-fixed-variant transition-colors shadow flex items-center gap-2">
+                <span class="material-symbols-outlined">save</span>
+                Guardar Cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        const dt = new DataTransfer();
+        
+        function handleFiles(input) {
+            for(let i = 0; i < input.files.length; i++) {
+                dt.items.add(input.files[i]);
+            }
+            renderFiles();
+        }
+        
+        function removeFile(index) {
+            dt.items.remove(index);
+            renderFiles();
+        }
+        
+        function renderFiles() {
+            const input = document.getElementById('Adjuntos');
+            const container = document.getElementById('fileListContainer');
+            
+            input.files = dt.files;
+            container.innerHTML = '';
+            
+            for(let i = 0; i < dt.files.length; i++) {
+                const file = dt.files[i];
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-surface-bright border border-outline-variant rounded-lg p-2 px-3";
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 truncate">
+                        <span class="material-symbols-outlined text-on-surface-variant text-[18px]">draft</span>
+                        <span class="text-body-sm text-on-surface truncate">${file.name}</span>
+                    </div>
+                    <button type="button" onclick="removeFile(${i})" class="text-on-surface-variant hover:text-error transition-colors p-1 flex items-center justify-center rounded hover:bg-error-container">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                `;
+                container.appendChild(div);
+            }
+        }
+    </script>
+}
