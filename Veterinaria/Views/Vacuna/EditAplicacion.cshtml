@@ -39,7 +39,14 @@
                     </label>
                 </div>
                 <div id="containerProximaDosis" class="transition-opacity duration-200 @(!Model.FechaProximaDosis.HasValue ? "opacity-50 pointer-events-none" : "")">
-                    <input asp-for="FechaProximaDosis" type="date" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" @(!Model.FechaProximaDosis.HasValue ? "disabled" : "") />
+                    @if (!Model.FechaProximaDosis.HasValue)
+                    {
+                        <input asp-for="FechaProximaDosis" type="date" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" disabled />
+                    }
+                    else
+                    {
+                        <input asp-for="FechaProximaDosis" type="date" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                    }
                     <span asp-validation-for="FechaProximaDosis" class="text-error text-xs mt-1 block"></span>
                 </div>
             </div>
