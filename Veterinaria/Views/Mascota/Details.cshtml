@@ -209,7 +209,7 @@
                     {
                         @foreach(var v in Model.VacunasAplicadas.OrderByDescending(va => va.FechaAplicacion))
                         {
-                            bool isVencida = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value < DateTime.Now;
+                            bool isVencida = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5);
                             bool esDosisUnica = !v.FechaProximaDosis.HasValue;
                             string borderClass = isVencida ? "border-error-container" : "border-outline-variant";
                             

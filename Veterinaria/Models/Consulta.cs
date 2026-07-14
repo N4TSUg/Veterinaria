@@ -16,7 +16,7 @@ namespace Veterinaria.Models
         public Mascota Mascota { get; set; } = null!;
 
         [Required(ErrorMessage = "La fecha de la consulta es obligatoria")]
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        public DateTime Fecha { get; set; } = DateTime.UtcNow.AddHours(-5);
 
         [Required(ErrorMessage = "El motivo de la consulta es obligatorio")]
         [StringLength(200)]

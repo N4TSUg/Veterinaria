@@ -9,7 +9,7 @@ namespace Veterinaria.ViewModels.Consulta
         public int IdMascota { get; set; }
 
         [Required(ErrorMessage = "La fecha de la consulta es obligatoria")]
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        public DateTime Fecha { get; set; } = DateTime.UtcNow.AddHours(-5);
 
         [Required(ErrorMessage = "El motivo es obligatorio")]
         [StringLength(200)]

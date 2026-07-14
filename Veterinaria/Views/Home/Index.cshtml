@@ -10,7 +10,7 @@
         <div>
             <h2 class="text-headline-lg font-headline-lg text-on-surface">Visión General</h2>
             <p class="text-body-md font-body-md text-on-surface-variant mt-1">
-                Hoy es @DateTime.Now.ToString("dddd, dd 'de' MMMM")
+                Hoy es @DateTime.UtcNow.AddHours(-5).ToString("dddd, dd 'de' MMMM")
             </p>
         </div>
         <div class="flex gap-md">

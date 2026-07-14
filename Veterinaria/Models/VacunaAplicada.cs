@@ -22,7 +22,7 @@ namespace Veterinaria.Models
         public Vacuna Vacuna { get; set; } = null!;
 
         [Required(ErrorMessage = "La fecha de aplicación es obligatoria")]
-        public DateTime FechaAplicacion { get; set; } = DateTime.Now;
+        public DateTime FechaAplicacion { get; set; } = DateTime.UtcNow.AddHours(-5);
 
         public DateTime? FechaProximaDosis { get; set; }
     }

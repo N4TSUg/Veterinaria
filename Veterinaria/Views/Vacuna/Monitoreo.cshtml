@@ -30,8 +30,8 @@
 
         @foreach(var item in Model)
         {
-            var isVencida = item.FechaProximaDosis.HasValue && item.FechaProximaDosis.Value < DateTime.Now;
-            var isPendiente = item.FechaProximaDosis.HasValue && !isVencida && item.FechaProximaDosis.Value <= DateTime.Now.AddDays(7);
+            var isVencida = item.FechaProximaDosis.HasValue && item.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5);
+            var isPendiente = item.FechaProximaDosis.HasValue && !isVencida && item.FechaProximaDosis.Value <= DateTime.UtcNow.AddHours(-5).AddDays(7);
             var esDosisUnica = !item.FechaProximaDosis.HasValue;
             
             var rowClass = isVencida 

@@ -12,7 +12,7 @@ namespace Veterinaria.ViewModels.Vacuna
         public int IdVacuna { get; set; }
 
         [Required(ErrorMessage = "La fecha de aplicación es obligatoria")]
-        public DateTime FechaAplicacion { get; set; } = DateTime.Now;
+        public DateTime FechaAplicacion { get; set; } = DateTime.UtcNow.AddHours(-5);
 
         public DateTime? FechaProximaDosis { get; set; }
 
