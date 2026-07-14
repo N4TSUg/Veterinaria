@@ -225,6 +225,14 @@
                                         <p class="text-label-md font-label-md text-on-surface-variant">Tipo: @v.Vacuna?.Tipo</p>
                                     </div>
                                 </div>
+                                <div class="flex items-center gap-2 mr-auto ml-4 sm:ml-6 mt-2 sm:mt-0">
+                                    <a asp-controller="Vacuna" asp-action="EditAplicacion" asp-route-id="@v.IdVacunaAplicada" class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Vacuna">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    </a>
+                                    <button type="button" onclick="event.stopPropagation(); openDeleteModal('@Url.Action("DeleteAplicacion", "Vacuna", new { id = v.IdVacunaAplicada })', '¿Estás seguro de que deseas eliminar esta vacuna del historial?')" class="text-on-surface-variant hover:text-error transition-colors cursor-pointer" title="Eliminar Vacuna">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    </button>
+                                </div>
                                 <div class="flex items-center gap-lg mt-sm sm:mt-0 w-full sm:w-auto border-t sm:border-t-0 border-outline-variant pt-sm sm:pt-0">
                                     <div class="text-right flex-1 sm:flex-none">
                                         <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Aplicada</span>

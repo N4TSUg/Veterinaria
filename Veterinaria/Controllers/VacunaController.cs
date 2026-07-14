@@ -164,5 +164,74 @@ namespace Veterinaria.Controllers
             TempData["Success"] = "Vacuna registrada exitosamente.";
             return RedirectToAction("Details", "Mascota", new { id = model.IdMascota });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditAplicacion(int id)
+        {
+            var aplicacion = await _context.VacunasAplicadas.FindAsync(id);
+            if (aplicacion == null) return NotFound();
+
+            var vacunas = await _context.Vacunas.ToListAsync();
+
+            var vm = new VacunaAplicadaEditVM
+            {
+                IdVacunaAplicada = aplicacion.IdVacunaAplicada,
+                IdMascota = aplicacion.IdMascota,
+                IdVacuna = aplicacion.IdVacuna,
+                FechaAplicacion = aplicacion.FechaAplicacion,
+                FechaProximaDosis = aplicacion.FechaProximaDosis,
+                VacunasDisponibles = vacunas.Select(v => new SelectListItem
+                {
+                    Value = v.IdVacuna.ToString(),
+                    Text = $"{v.Nombre} ({v.Tipo})"
+                })
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAplicacion(VacunaAplicadaEditVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var vacunas = await _context.Vacunas.ToListAsync();
+                model.VacunasDisponibles = vacunas.Select(v => new SelectListItem
+                {
+                    Value = v.IdVacuna.ToString(),
+                    Text = $"{v.Nombre} ({v.Tipo})"
+                });
+                return View(model);
+            }
+
+            var aplicacion = await _context.VacunasAplicadas.FindAsync(model.IdVacunaAplicada);
+            if (aplicacion == null) return NotFound();
+
+            aplicacion.IdVacuna = model.IdVacuna;
+            aplicacion.FechaAplicacion = model.FechaAplicacion;
+            aplicacion.FechaProximaDosis = model.FechaProximaDosis;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Vacuna actualizada exitosamente.";
+            return RedirectToAction("Details", "Mascota", new { id = model.IdMascota });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAplicacion(int id)
+        {
+            var aplicacion = await _context.VacunasAplicadas.FindAsync(id);
+            if (aplicacion != null)
+            {
+                int idMascota = aplicacion.IdMascota;
+                _context.VacunasAplicadas.Remove(aplicacion);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Vacuna eliminada exitosamente.";
+                return RedirectToAction("Details", "Mascota", new { id = idMascota });
+            }
+            return RedirectToAction("Index", "Mascota");
+        }
     }
 }
