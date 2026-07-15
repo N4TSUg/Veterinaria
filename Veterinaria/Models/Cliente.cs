@@ -25,9 +25,8 @@ namespace Veterinaria.Models
         [RegularExpression(@"^\d+$", ErrorMessage = "El teléfono solo debe contener números")]
         public string? Telefono { get; set; }
 
-        [Required(ErrorMessage = "La dirección es obligatoria")]
         [StringLength(150)]
-        public string Direccion { get; set; } = null!;
+        public string? Direccion { get; set; }
 
         [StringLength(100)]
         [EmailAddress(ErrorMessage = "Debe ser un formato de correo electrónico válido")]

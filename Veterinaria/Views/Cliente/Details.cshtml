@@ -39,7 +39,7 @@
                     </div>
                     <div>
                         <h3 class="text-headline-sm font-headline-sm text-on-surface">@Model.Nombre @Model.Apellido</h3>
-                        <p class="text-label-md text-on-surface-variant">DNI: @Model.DNI</p>
+                        <p class="text-label-md text-on-surface-variant">DNI: @(Model.DNI ?? "No registrado")</p>
                     </div>
                 </div>
 
@@ -48,7 +48,7 @@
                         <span class="block text-label-md text-on-surface-variant uppercase mb-1">Teléfono</span>
                         <div class="flex items-center gap-2 text-on-surface font-medium">
                             <span class="material-symbols-outlined text-sm text-primary">call</span>
-                            @Model.Telefono
+                            @(Model.Telefono ?? "No registrado")
                         </div>
                     </div>
                     
