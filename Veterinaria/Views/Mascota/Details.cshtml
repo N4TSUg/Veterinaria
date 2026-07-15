@@ -102,7 +102,7 @@
                         <p class="text-body-md font-body-md font-semibold text-on-surface">@Model.Cliente?.Nombre @Model.Cliente?.Apellido</p>
                         <div class="flex items-center gap-xs text-on-surface-variant text-label-md mt-1">
                             <span class="material-symbols-outlined text-[14px]">call</span>
-                            @Model.Cliente?.Telefono
+                            @(Model.Cliente?.Telefono ?? "No registrado")
                         </div>
                     </div>
                 </div>
