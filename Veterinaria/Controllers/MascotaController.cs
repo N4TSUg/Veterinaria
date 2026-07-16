@@ -77,8 +77,10 @@ namespace Veterinaria.Controllers
                 Nombre = model.Nombre,
                 Especie = model.Especie,
                 Raza = model.Raza,
+                Color = model.Color,
                 Sexo = model.Sexo,
-                Edad = model.Edad,
+                FechaNacimiento = model.FechaNacimiento,
+                FechaIngreso = model.FechaIngreso,
                 Peso = model.Peso
             };
 
@@ -111,8 +113,10 @@ namespace Veterinaria.Controllers
                 Nombre = mascota.Nombre,
                 Especie = mascota.Especie,
                 Raza = mascota.Raza,
+                Color = mascota.Color,
                 Sexo = mascota.Sexo,
-                Edad = mascota.Edad,
+                FechaNacimiento = mascota.FechaNacimiento,
+                FechaIngreso = mascota.FechaIngreso,
                 Peso = mascota.Peso,
                 FotoUrl = mascota.FotoUrl,
                 Clientes = await _context.Clientes
@@ -142,8 +146,10 @@ namespace Veterinaria.Controllers
             mascota.Nombre = model.Nombre;
             mascota.Especie = model.Especie;
             mascota.Raza = model.Raza;
+            mascota.Color = model.Color;
             mascota.Sexo = model.Sexo;
-            mascota.Edad = model.Edad;
+            mascota.FechaNacimiento = model.FechaNacimiento;
+            mascota.FechaIngreso = model.FechaIngreso;
             mascota.Peso = model.Peso;
 
             if (model.Foto != null && model.Foto.Length > 0)

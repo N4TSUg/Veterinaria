@@ -62,7 +62,7 @@
                     <h3 class="text-headline-md font-headline-md text-on-surface">@Model.Nombre</h3>
                     <div class="inline-flex items-center justify-center gap-xs bg-surface-container-low text-primary px-sm py-unit rounded-full text-label-md font-label-md mt-unit mb-md">
                         <span class="material-symbols-outlined text-[14px]">@(Model.Sexo == "Macho" ? "male" : "female")</span>
-                        @Model.Sexo, @Model.Edad años
+                        @Model.Sexo, @Model.EdadCalculada
                     </div>
                     
                     <div class="grid grid-cols-2 gap-unit w-full text-left">
@@ -73,6 +73,18 @@
                         <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
                             <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Raza</span>
                             <span class="text-body-md font-body-md text-on-surface truncate">@Model.Raza</span>
+                        </div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Color</span>
+                            <span class="text-body-md font-body-md text-on-surface truncate">@Model.Color</span>
+                        </div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Nacimiento</span>
+                            <span class="text-body-md font-body-md text-on-surface">@Model.FechaNacimiento.ToString("dd MMM yy")</span>
+                        </div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Ingreso</span>
+                            <span class="text-body-md font-body-md text-on-surface">@Model.FechaIngreso.ToString("dd MMM yy")</span>
                         </div>
                         <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
                             <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Peso</span>

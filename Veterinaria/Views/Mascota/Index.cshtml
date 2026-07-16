@@ -34,7 +34,7 @@
                     <tr class="hover:bg-surface-container-lowest transition-colors cursor-pointer" onclick="window.location.href='@Url.Action("Details", "Mascota", new { id = item.IdMascota })'">
                         <td class="px-6 py-4 font-medium text-on-surface">@item.Nombre</td>
                         <td class="px-6 py-4 text-on-surface">@item.Especie - @item.Raza</td>
-                        <td class="px-6 py-4 text-on-surface-variant">@item.Sexo, @item.Edad años</td>
+                        <td class="px-6 py-4 text-on-surface-variant">@item.Sexo, @item.EdadCalculada</td>
                         <td class="px-6 py-4 text-on-surface-variant">@item.Cliente?.Nombre @item.Cliente?.Apellido</td>
                         <td class="px-6 py-4 text-right space-x-2" onclick="event.stopPropagation();">
                             <a asp-action="Edit" asp-route-id="@item.IdMascota" class="text-on-surface-variant hover:text-on-surface p-1 rounded transition-colors inline-block" title="Editar">

@@ -27,13 +27,50 @@ namespace Veterinaria.Models
         [StringLength(50)]
         public string Raza { get; set; } = null!;
 
+        [Required(ErrorMessage = "El color es obligatorio")]
+        [StringLength(30)]
+        public string Color { get; set; } = null!;
+
         [Required(ErrorMessage = "El sexo es obligatorio")]
         [StringLength(10)]
         public string Sexo { get; set; } = null!;
 
-        [Required(ErrorMessage = "La edad es obligatoria")]
-        [Range(0, 50, ErrorMessage = "La edad debe ser entre 0 y 50 años")]
-        public int Edad { get; set; }
+        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria")]
+        public DateTime FechaNacimiento { get; set; }
+
+        [Required(ErrorMessage = "La fecha de ingreso es obligatoria")]
+        public DateTime FechaIngreso { get; set; } = DateTime.UtcNow.AddHours(-5);
+
+        [NotMapped]
+        public string EdadCalculada
+        {
+            get
+            {
+                var hoy = DateTime.UtcNow.AddHours(-5);
+                if (FechaNacimiento > hoy) return "Recién nacido";
+
+                var mesesTotal = (hoy.Year - FechaNacimiento.Year) * 12 + hoy.Month - FechaNacimiento.Month;
+                int dias = hoy.Day - FechaNacimiento.Day;
+                if (dias < 0)
+                {
+                    mesesTotal--;
+                    var mesAnterior = hoy.AddMonths(-1);
+                    dias += DateTime.DaysInMonth(mesAnterior.Year, mesAnterior.Month);
+                }
+
+                int anios = mesesTotal / 12;
+                int mesesRestantes = mesesTotal % 12;
+
+                if (anios >= 1)
+                {
+                    return $"{anios} año(s)" + (mesesRestantes > 0 ? $" y {mesesRestantes} mes(es)" : "");
+                }
+                else
+                {
+                    return $"{mesesRestantes} mes(es)" + (dias > 0 ? $" y {dias} día(s)" : "");
+                }
+            }
+        }
 
         [Required(ErrorMessage = "El peso es obligatorio")]
         [Range(0.1, 150.0, ErrorMessage = "El peso debe ser mayor a 0")]

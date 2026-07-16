@@ -20,13 +20,19 @@ namespace Veterinaria.ViewModels.Mascota
         [StringLength(50)]
         public string Raza { get; set; } = null!;
 
+        [Required(ErrorMessage = "El color es obligatorio")]
+        [StringLength(30)]
+        public string Color { get; set; } = null!;
+
         [Required(ErrorMessage = "El sexo es obligatorio")]
         [StringLength(10)]
         public string Sexo { get; set; } = null!;
 
-        [Required(ErrorMessage = "La edad es obligatoria")]
-        [Range(0, 50, ErrorMessage = "La edad debe ser entre 0 y 50 años")]
-        public int Edad { get; set; }
+        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria")]
+        public DateTime FechaNacimiento { get; set; } = DateTime.UtcNow.AddHours(-5).AddYears(-1);
+
+        [Required(ErrorMessage = "La fecha de ingreso es obligatoria")]
+        public DateTime FechaIngreso { get; set; } = DateTime.UtcNow.AddHours(-5);
 
         [Required(ErrorMessage = "El peso es obligatorio")]
         [Range(0.1, 150.0, ErrorMessage = "El peso debe ser mayor a 0")]
