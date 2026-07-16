@@ -30,13 +30,15 @@
 
         @foreach(var item in Model)
         {
-            var isVencida = item.FechaProximaDosis.HasValue && item.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5);
-            var isPendiente = item.FechaProximaDosis.HasValue && !isVencida && item.FechaProximaDosis.Value <= DateTime.UtcNow.AddHours(-5).AddDays(7);
+            var tieneNuevaAplicacion = Model.Any(va => va.IdMascota == item.IdMascota && va.IdVacuna == item.IdVacuna && va.FechaAplicacion > item.FechaAplicacion);
+            var isVencida = item.FechaProximaDosis.HasValue && item.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5) && !tieneNuevaAplicacion;
+            var isPendiente = item.FechaProximaDosis.HasValue && !isVencida && !tieneNuevaAplicacion && item.FechaProximaDosis.Value <= DateTime.UtcNow.AddHours(-5).AddDays(7);
             var esDosisUnica = !item.FechaProximaDosis.HasValue;
+            var esRenovada = tieneNuevaAplicacion;
             
             var rowClass = isVencida 
                 ? "bg-error-container/10 border-error-container" 
-                : "bg-surface-container-lowest border-outline-variant";
+                : (esRenovada ? "bg-surface-container-lowest border-outline-variant opacity-75" : "bg-surface-container-lowest border-outline-variant");
 
             <a asp-controller="Mascota" asp-action="Details" asp-route-id="@item.IdMascota" class="grid grid-cols-1 md:grid-cols-12 gap-md px-md py-md rounded-lg border @rowClass items-center hover:shadow-md transition-shadow group relative overflow-hidden cursor-pointer block">
                 
@@ -66,7 +68,7 @@
                     @item.FechaAplicacion.ToString("dd MMM yyyy")
                 </div>
 
-                <div class="md:col-span-2 text-body-md font-body-md @(isVencida ? "text-error font-semibold" : "text-on-surface-variant")">
+                <div class="md:col-span-2 text-body-md font-body-md @(isVencida ? "text-error font-semibold" : (esRenovada ? "text-on-surface-variant line-through" : "text-on-surface-variant"))">
                     <span class="md:hidden font-bold text-xs uppercase block text-on-surface-variant">Próxima Dosis:</span>
                     @(esDosisUnica ? "Única Dosis / No requiere" : item.FechaProximaDosis?.ToString("dd MMM yyyy"))
                 </div>
@@ -77,6 +79,13 @@
                         <span class="inline-flex items-center gap-xs px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant text-label-md font-label-md">
                             <span class="material-symbols-outlined text-[16px]">done_all</span>
                             Completada
+                        </span>
+                    }
+                    else if (esRenovada)
+                    {
+                        <span class="inline-flex items-center gap-xs px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant text-label-md font-label-md">
+                            <span class="material-symbols-outlined text-[16px]">history</span>
+                            Renovada
                         </span>
                     }
                     else if (isVencida)

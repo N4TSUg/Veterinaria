@@ -221,12 +221,15 @@
                     {
                         @foreach(var v in Model.VacunasAplicadas.OrderByDescending(va => va.FechaAplicacion))
                         {
-                            bool isVencida = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5);
+                            bool tieneNuevaAplicacion = Model.VacunasAplicadas.Any(va => va.IdVacuna == v.IdVacuna && va.FechaAplicacion > v.FechaAplicacion);
+                            bool isVencida = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5) && !tieneNuevaAplicacion;
                             bool esDosisUnica = !v.FechaProximaDosis.HasValue;
-                            string borderClass = isVencida ? "border-error-container" : "border-outline-variant";
+                            bool esRenovada = tieneNuevaAplicacion;
+                            string borderClass = isVencida ? "border-error-container" : (esRenovada ? "border-outline-variant opacity-75" : "border-outline-variant");
                             
                             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-sm border @borderClass rounded-lg bg-surface hover:bg-surface-container-low transition-colors relative overflow-hidden">
                                 @if (isVencida) { <div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div> }
+                                else if (esRenovada) { <div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-variant"></div> }
                                 
                                 <div class="flex items-center gap-md @(isVencida ? "pl-sm" : "")">
                                     <div class="w-10 h-10 rounded-full @(isVencida ? "bg-error-container text-on-error-container" : "bg-surface-variant text-on-surface-variant") flex items-center justify-center">
@@ -251,8 +254,8 @@
                                         <span class="text-body-md text-on-surface">@v.FechaAplicacion.ToString("dd MMM yyyy")</span>
                                     </div>
                                     <div class="text-right flex-1 sm:flex-none pl-md border-l border-outline-variant">
-                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">@(esDosisUnica ? "Estado" : (isVencida ? "Vencida el" : "Próxima Dosis"))</span>
-                                        <span class="text-body-md font-bold @(isVencida ? "text-error" : "text-on-surface")">@(esDosisUnica ? "Dosis Única" : v.FechaProximaDosis?.ToString("dd MMM yyyy"))</span>
+                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">@(esDosisUnica ? "Estado" : (isVencida ? "Vencida el" : (esRenovada ? "Estado" : "Próxima Dosis")))</span>
+                                        <span class="text-body-md font-bold @(isVencida ? "text-error" : (esRenovada ? "text-on-surface-variant" : "text-on-surface"))">@(esDosisUnica ? "Dosis Única" : (esRenovada ? "Renovada" : v.FechaProximaDosis?.ToString("dd MMM yyyy")))</span>
                                     </div>
                                 </div>
                             </div>
