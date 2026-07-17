@@ -15,6 +15,7 @@ namespace Veterinaria.Data
         public DbSet<Consulta> Consultas { get; set; } = null!;
         public DbSet<Vacuna> Vacunas { get; set; } = null!;
         public DbSet<VacunaAplicada> VacunasAplicadas { get; set; } = null!;
+        public DbSet<ControlAntiparasitario> ControlesAntiparasitarios { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +44,12 @@ namespace Veterinaria.Data
                 .HasOne(va => va.Mascota)
                 .WithMany(m => m.VacunasAplicadas)
                 .HasForeignKey(va => va.IdMascota)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ControlAntiparasitario>()
+                .HasOne(ca => ca.Mascota)
+                .WithMany(m => m.ControlesAntiparasitarios)
+                .HasForeignKey(ca => ca.IdMascota)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<VacunaAplicada>()

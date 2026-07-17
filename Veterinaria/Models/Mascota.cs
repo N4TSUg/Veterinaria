@@ -72,6 +72,36 @@ namespace Veterinaria.Models
             }
         }
 
+        [NotMapped]
+        public string EdadIngresoCalculada
+        {
+            get
+            {
+                if (FechaNacimiento > FechaIngreso) return "Recién nacido";
+
+                var mesesTotal = (FechaIngreso.Year - FechaNacimiento.Year) * 12 + FechaIngreso.Month - FechaNacimiento.Month;
+                int dias = FechaIngreso.Day - FechaNacimiento.Day;
+                if (dias < 0)
+                {
+                    mesesTotal--;
+                    var mesAnterior = FechaIngreso.AddMonths(-1);
+                    dias += DateTime.DaysInMonth(mesAnterior.Year, mesAnterior.Month);
+                }
+
+                int anios = mesesTotal / 12;
+                int mesesRestantes = mesesTotal % 12;
+
+                if (anios >= 1)
+                {
+                    return $"{anios} año(s)" + (mesesRestantes > 0 ? $" y {mesesRestantes} mes(es)" : "");
+                }
+                else
+                {
+                    return $"{mesesRestantes} mes(es)" + (dias > 0 ? $" y {dias} día(s)" : "");
+                }
+            }
+        }
+
         [Required(ErrorMessage = "El peso es obligatorio")]
         [Range(0.1, 150.0, ErrorMessage = "El peso debe ser mayor a 0")]
         [Column(TypeName = "decimal(5,2)")]
@@ -83,5 +113,6 @@ namespace Veterinaria.Models
         // Relaciones 1:N
         public ICollection<Consulta> Consultas { get; set; } = new List<Consulta>();
         public ICollection<VacunaAplicada> VacunasAplicadas { get; set; } = new List<VacunaAplicada>();
+        public ICollection<ControlAntiparasitario> ControlesAntiparasitarios { get; set; } = new List<ControlAntiparasitario>();
     }
 }

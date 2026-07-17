@@ -1,0 +1,72 @@
+@model Veterinaria.ViewModels.ControlAntiparasitario.ControlAntiparasitarioEditVM
+
+@{
+    ViewData["Title"] = "Editar Control Antiparasitario";
+}
+
+<div class="max-w-3xl mx-auto flex flex-col gap-lg">
+    <!-- Header -->
+    <div>
+        <div class="flex items-center gap-xs text-on-surface-variant text-label-md font-label-md mb-unit">
+            <a asp-controller="Mascota" asp-action="Index" class="hover:text-primary transition-colors">Mascotas</a>
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            <a asp-controller="Mascota" asp-action="Details" asp-route-id="@Model.IdMascota" class="hover:text-primary transition-colors">Perfil Clínico</a>
+            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+            <span class="text-on-surface">Editar Control</span>
+        </div>
+        <h2 class="text-headline-lg font-headline-lg text-on-surface">Editar Control Antiparasitario</h2>
+    </div>
+
+    <!-- Formulario -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="IdControlAntiparasitario" />
+            <input type="hidden" asp-for="IdMascota" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-lg">
+                <!-- Fecha -->
+                <div>
+                    <label asp-for="Fecha" class="block text-label-md font-label-md text-on-surface mb-2">Fecha</label>
+                    <input asp-for="Fecha" type="date" asp-format="{0:yyyy-MM-dd}" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                    <span asp-validation-for="Fecha" class="text-error text-xs mt-1 block"></span>
+                </div>
+
+                <!-- Peso -->
+                <div>
+                    <label asp-for="Peso" class="block text-label-md font-label-md text-on-surface mb-2">Peso (kg)</label>
+                    <input asp-for="Peso" type="number" step="0.01" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                    <span asp-validation-for="Peso" class="text-error text-xs mt-1 block"></span>
+                </div>
+
+                <!-- Medicamento -->
+                <div class="md:col-span-2">
+                    <label asp-for="Medicamento" class="block text-label-md font-label-md text-on-surface mb-2">Medicamento / Producto</label>
+                    <input asp-for="Medicamento" type="text" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                    <span asp-validation-for="Medicamento" class="text-error text-xs mt-1 block"></span>
+                </div>
+
+                <!-- Dosis -->
+                <div class="md:col-span-2">
+                    <label asp-for="Dosis" class="block text-label-md font-label-md text-on-surface mb-2">Dosis Aplicada</label>
+                    <input asp-for="Dosis" type="text" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                    <span asp-validation-for="Dosis" class="text-error text-xs mt-1 block"></span>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex items-center justify-end gap-md pt-md border-t border-outline-variant mt-md">
+                <a asp-controller="Mascota" asp-action="Details" asp-route-id="@Model.IdMascota" class="px-6 py-2 rounded-lg font-label-md text-primary border border-outline-variant hover:bg-surface-container-low transition-colors">
+                    Cancelar
+                </a>
+                <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -38,6 +38,7 @@ namespace Veterinaria.Controllers
                 .Include(m => m.Consultas)
                 .Include(m => m.VacunasAplicadas)
                     .ThenInclude(v => v.Vacuna)
+                .Include(m => m.ControlesAntiparasitarios)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.IdMascota == id);
 

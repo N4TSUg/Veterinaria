@@ -57,20 +57,25 @@
             </div>
             
             <div>
-                <label asp-for="FechaIngreso" class="block text-label-md font-label-md text-on-surface mb-2">Fecha de Ingreso</label>
-                <input asp-for="FechaIngreso" type="date" asp-format="{0:yyyy-MM-dd}" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
-                <span asp-validation-for="FechaIngreso" class="text-error text-xs mt-1 block"></span>
-            </div>
-
-            <div>
                 <label asp-for="FechaNacimiento" class="block text-label-md font-label-md text-on-surface mb-2">Fecha de Nacimiento</label>
                 <input asp-for="FechaNacimiento" type="date" asp-format="{0:yyyy-MM-dd}" id="inputFechaNacimiento" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
                 <span asp-validation-for="FechaNacimiento" class="text-error text-xs mt-1 block"></span>
             </div>
 
             <div>
-                <label class="block text-label-md font-label-md text-on-surface mb-2">Edad Calculada</label>
+                <label class="block text-label-md font-label-md text-on-surface mb-2">Edad Actual</label>
                 <input type="text" id="inputEdadCalculada" readonly class="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-body-md text-on-surface-variant focus:outline-none cursor-not-allowed" placeholder="Seleccione fecha de nacimiento" />
+            </div>
+
+            <div>
+                <label asp-for="FechaIngreso" class="block text-label-md font-label-md text-on-surface mb-2">Fecha de Ingreso</label>
+                <input asp-for="FechaIngreso" type="date" asp-format="{0:yyyy-MM-dd}" id="inputFechaIngreso" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
+                <span asp-validation-for="FechaIngreso" class="text-error text-xs mt-1 block"></span>
+            </div>
+
+            <div>
+                <label class="block text-label-md font-label-md text-on-surface mb-2">Edad al Ingreso</label>
+                <input type="text" id="inputEdadIngreso" readonly class="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-body-md text-on-surface-variant focus:outline-none cursor-not-allowed" placeholder="Calculado al ingresar" />
             </div>
 
             <div>
@@ -92,29 +97,21 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const fechaNacimientoInput = document.getElementById("inputFechaNacimiento");
+            const fechaIngresoInput = document.getElementById("inputFechaIngreso");
             const edadCalculadaInput = document.getElementById("inputEdadCalculada");
+            const edadIngresoInput = document.getElementById("inputEdadIngreso");
 
-            function calcularEdad() {
-                if (!fechaNacimientoInput.value) {
-                    edadCalculadaInput.value = "";
-                    return;
+            function calcularEdad(fechaNac, fechaRef) {
+                if (fechaNac > fechaRef) {
+                    return "Recién nacido";
                 }
 
-                const fechaNac = new Date(fechaNacimientoInput.value);
-                fechaNac.setMinutes(fechaNac.getMinutes() + fechaNac.getTimezoneOffset());
-                const hoy = new Date();
-                
-                if (fechaNac > hoy) {
-                    edadCalculadaInput.value = "Recién nacido";
-                    return;
-                }
-
-                let mesesTotal = (hoy.getFullYear() - fechaNac.getFullYear()) * 12 + hoy.getMonth() - fechaNac.getMonth();
-                let dias = hoy.getDate() - fechaNac.getDate();
+                let mesesTotal = (fechaRef.getFullYear() - fechaNac.getFullYear()) * 12 + fechaRef.getMonth() - fechaNac.getMonth();
+                let dias = fechaRef.getDate() - fechaNac.getDate();
 
                 if (dias < 0) {
                     mesesTotal--;
-                    const mesAnterior = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
+                    const mesAnterior = new Date(fechaRef.getFullYear(), fechaRef.getMonth(), 0);
                     dias += mesAnterior.getDate();
                 }
 
@@ -124,16 +121,39 @@
                 if (anios >= 1) {
                     let texto = anios + " año(s)";
                     if (mesesRestantes > 0) texto += " y " + mesesRestantes + " mes(es)";
-                    edadCalculadaInput.value = texto;
+                    return texto;
                 } else {
                     let texto = mesesRestantes + " mes(es)";
                     if (dias > 0) texto += " y " + dias + " día(s)";
-                    edadCalculadaInput.value = texto;
+                    return texto;
                 }
             }
 
-            fechaNacimientoInput.addEventListener("change", calcularEdad);
-            calcularEdad();
+            function actualizarEdades() {
+                if (!fechaNacimientoInput.value) {
+                    edadCalculadaInput.value = "";
+                    edadIngresoInput.value = "";
+                    return;
+                }
+
+                const fechaNac = new Date(fechaNacimientoInput.value);
+                fechaNac.setMinutes(fechaNac.getMinutes() + fechaNac.getTimezoneOffset());
+                
+                const hoy = new Date();
+                edadCalculadaInput.value = calcularEdad(fechaNac, hoy);
+
+                if (fechaIngresoInput.value) {
+                    const fechaIngreso = new Date(fechaIngresoInput.value);
+                    fechaIngreso.setMinutes(fechaIngreso.getMinutes() + fechaIngreso.getTimezoneOffset());
+                    edadIngresoInput.value = calcularEdad(fechaNac, fechaIngreso);
+                } else {
+                    edadIngresoInput.value = "";
+                }
+            }
+
+            fechaNacimientoInput.addEventListener("change", actualizarEdades);
+            fechaIngresoInput.addEventListener("change", actualizarEdades);
+            actualizarEdades();
         });
     </script>
 }

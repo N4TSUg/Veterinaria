@@ -28,6 +28,10 @@
             <h2 class="text-headline-lg font-headline-lg text-on-surface">Perfil Clínico</h2>
         </div>
         <div class="flex items-center gap-sm">
+            <a asp-controller="ControlAntiparasitario" asp-action="Create" asp-route-idMascota="@Model.IdMascota" class="bg-surface-container-lowest border border-outline-variant text-primary hover:bg-surface-container-low py-sm px-md rounded-lg text-label-md font-label-md transition-colors flex items-center gap-xs cursor-pointer shadow-sm">
+                <span class="material-symbols-outlined text-[18px]">pest_control</span>
+                Nuevo Control
+            </a>
             <a asp-controller="Vacuna" asp-action="Aplicar" asp-route-idMascota="@Model.IdMascota" class="bg-surface-container-lowest border border-outline-variant text-primary hover:bg-surface-container-low py-sm px-md rounded-lg text-label-md font-label-md transition-colors flex items-center gap-xs cursor-pointer shadow-sm">
                 <span class="material-symbols-outlined text-[18px]">syringe</span>
                 Nueva Vacuna
@@ -87,6 +91,10 @@
                             <span class="text-body-md font-body-md text-on-surface">@Model.FechaIngreso.ToString("dd MMM yy")</span>
                         </div>
                         <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
+                            <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Edad Ingreso</span>
+                            <span class="text-body-md font-body-md text-on-surface">@Model.EdadIngresoCalculada</span>
+                        </div>
+                        <div class="bg-surface p-sm rounded border border-outline-variant flex flex-col">
                             <span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-wider">Peso</span>
                             <span class="text-body-md font-body-md text-on-surface">@Model.Peso kg</span>
                         </div>
@@ -124,12 +132,15 @@
         <!-- Right Column: Medical History Canvas -->
         <div class="lg:col-span-8 flex flex-col">
             <!-- Tab Navigation -->
-            <div class="flex gap-sm border-b border-outline-variant mb-md px-sm">
+            <div class="flex gap-sm border-b border-outline-variant mb-md px-sm overflow-x-auto whitespace-nowrap">
                 <button id="tab-historia" onclick="switchTab('historia')" class="px-md py-sm text-label-md font-label-md border-b-2 border-primary text-primary transition-all">
                     Historia Clínica
                 </button>
                 <button id="tab-vacunas" onclick="switchTab('vacunas')" class="px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all">
                     Carnet de Vacunación
+                </button>
+                <button id="tab-antiparasitario" onclick="switchTab('antiparasitario')" class="px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all">
+                    Control Antiparasitario
                 </button>
             </div>
 
@@ -222,14 +233,15 @@
                         @foreach(var v in Model.VacunasAplicadas.OrderByDescending(va => va.FechaAplicacion))
                         {
                             bool tieneNuevaAplicacion = Model.VacunasAplicadas.Any(va => va.IdVacuna == v.IdVacuna && va.FechaAplicacion > v.FechaAplicacion);
-                            bool isVencida = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5) && !tieneNuevaAplicacion;
+                            bool esExpirada = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value.AddDays(10) < DateTime.UtcNow.AddHours(-5) && !tieneNuevaAplicacion;
+                            bool isVencida = v.FechaProximaDosis.HasValue && v.FechaProximaDosis.Value < DateTime.UtcNow.AddHours(-5) && !esExpirada && !tieneNuevaAplicacion;
                             bool esDosisUnica = !v.FechaProximaDosis.HasValue;
                             bool esRenovada = tieneNuevaAplicacion;
-                            string borderClass = isVencida ? "border-error-container" : (esRenovada ? "border-outline-variant opacity-75" : "border-outline-variant");
+                            string borderClass = isVencida ? "border-error-container" : ((esRenovada || esExpirada) ? "border-outline-variant opacity-75" : "border-outline-variant");
                             
                             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-sm border @borderClass rounded-lg bg-surface hover:bg-surface-container-low transition-colors relative overflow-hidden">
                                 @if (isVencida) { <div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div> }
-                                else if (esRenovada) { <div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-variant"></div> }
+                                else if (esRenovada || esExpirada) { <div class="absolute left-0 top-0 bottom-0 w-1 bg-surface-variant"></div> }
                                 
                                 <div class="flex items-center gap-md @(isVencida ? "pl-sm" : "")">
                                     <div class="w-10 h-10 rounded-full @(isVencida ? "bg-error-container text-on-error-container" : "bg-surface-variant text-on-surface-variant") flex items-center justify-center">
@@ -254,8 +266,8 @@
                                         <span class="text-body-md text-on-surface">@v.FechaAplicacion.ToString("dd MMM yyyy")</span>
                                     </div>
                                     <div class="text-right flex-1 sm:flex-none pl-md border-l border-outline-variant">
-                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">@(esDosisUnica ? "Estado" : (isVencida ? "Vencida el" : (esRenovada ? "Estado" : "Próxima Dosis")))</span>
-                                        <span class="text-body-md font-bold @(isVencida ? "text-error" : (esRenovada ? "text-on-surface-variant" : "text-on-surface"))">@(esDosisUnica ? "Dosis Única" : (esRenovada ? "Renovada" : v.FechaProximaDosis?.ToString("dd MMM yyyy")))</span>
+                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">@(esDosisUnica ? "Estado" : (isVencida ? "Vencida el" : (esExpirada ? "Expiró el" : (esRenovada ? "Estado" : "Próxima Dosis"))))</span>
+                                        <span class="text-body-md font-bold @(isVencida ? "text-error" : ((esRenovada || esExpirada) ? "text-on-surface-variant" : "text-on-surface"))">@(esDosisUnica ? "Dosis Única" : (esRenovada ? "Renovada" : (esExpirada ? "Expirada" : v.FechaProximaDosis?.ToString("dd MMM yyyy"))))</span>
                                     </div>
                                 </div>
                             </div>
@@ -274,6 +286,62 @@
                     }
                 </div>
             </div>
+
+            <!-- Tab Content: Control Antiparasitario -->
+            <div id="content-antiparasitario" class="tab-content flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+                <div class="flex justify-between items-center mb-md">
+                    <h3 class="text-headline-md font-headline-md text-on-surface">Historial de Desparasitación</h3>
+                </div>
+
+                <div class="flex flex-col gap-sm">
+                    @if (Model.ControlesAntiparasitarios != null && Model.ControlesAntiparasitarios.Any())
+                    {
+                        @foreach(var control in Model.ControlesAntiparasitarios.OrderByDescending(c => c.Fecha))
+                        {
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-sm border border-outline-variant rounded-lg bg-surface hover:bg-surface-container-low transition-colors">
+                                <div class="flex items-center gap-md">
+                                    <div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center">
+                                        <span class="material-symbols-outlined">pest_control</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-body-lg font-body-lg font-semibold text-on-surface">@control.Medicamento</h4>
+                                        <p class="text-label-md font-label-md text-on-surface-variant">Dosis: @control.Dosis</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 mr-auto ml-4 sm:ml-6 mt-2 sm:mt-0">
+                                    <a asp-controller="ControlAntiparasitario" asp-action="Edit" asp-route-id="@control.IdControlAntiparasitario" class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Editar Control">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    </a>
+                                    <button type="button" onclick="event.stopPropagation(); openDeleteModal('@Url.Action("Delete", "ControlAntiparasitario", new { id = control.IdControlAntiparasitario })', '¿Estás seguro de que deseas eliminar este control antiparasitario?')" class="text-on-surface-variant hover:text-error transition-colors cursor-pointer" title="Eliminar Control">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    </button>
+                                </div>
+                                <div class="flex items-center gap-lg mt-sm sm:mt-0 w-full sm:w-auto border-t sm:border-t-0 border-outline-variant pt-sm sm:pt-0">
+                                    <div class="text-right flex-1 sm:flex-none">
+                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Peso</span>
+                                        <span class="text-body-md text-on-surface">@control.Peso kg</span>
+                                    </div>
+                                    <div class="text-right flex-1 sm:flex-none pl-md border-l border-outline-variant">
+                                        <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Fecha</span>
+                                        <span class="text-body-md font-bold text-on-surface">@control.Fecha.ToString("dd MMM yyyy")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center p-8 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-4xl opacity-50 mb-2">pest_control</span>
+                            <p class="mb-4">No hay controles antiparasitarios registrados.</p>
+                            <a asp-controller="ControlAntiparasitario" asp-action="Create" asp-route-idMascota="@Model.IdMascota" class="inline-flex items-center gap-2 bg-surface-container-lowest border border-outline-variant text-primary px-4 py-2 rounded-lg font-label-md hover:bg-surface-container-low transition-colors shadow-sm">
+                                <span class="material-symbols-outlined text-sm">add</span>
+                                Registrar Control
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -282,8 +350,10 @@
     <script>
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-historia').className = "px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all";
-            document.getElementById('tab-vacunas').className = "px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all";
+            const tabs = ['historia', 'vacunas', 'antiparasitario'];
+            tabs.forEach(t => {
+                document.getElementById('tab-' + t).className = "px-md py-sm text-label-md font-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all";
+            });
             
             document.getElementById(`content-${tabId}`).classList.add('active');
             document.getElementById(`tab-${tabId}`).className = "px-md py-sm text-label-md font-label-md border-b-2 border-primary text-primary transition-all";
