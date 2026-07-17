@@ -23,7 +23,12 @@
             </div>
             
             <div>
-                <label asp-for="FechaProximaCita" class="block text-label-md font-label-md text-on-surface mb-2">Fecha Próxima Cita (Opcional)</label>
+                <div class="flex items-center justify-between mb-2">
+                    <label asp-for="FechaProximaCita" class="block text-label-md font-label-md text-on-surface">Fecha Próxima Cita (Opcional)</label>
+                    <button type="button" onclick="document.getElementById('FechaProximaCita').value = ''" class="text-on-surface-variant hover:text-error transition-colors flex items-center justify-center p-1 rounded-full hover:bg-error-container" title="Borrar fecha seleccionada">
+                        <span class="material-symbols-outlined text-[18px]">backspace</span>
+                    </button>
+                </div>
                 <input asp-for="FechaProximaCita" type="datetime-local" class="w-full px-4 py-2 bg-surface-bright border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-shadow" />
                 <span asp-validation-for="FechaProximaCita" class="text-error text-xs mt-1 block"></span>
             </div>
